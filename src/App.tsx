@@ -16,67 +16,80 @@ interface InnerBoxProperties {
 
 export const App = () => {
   const arrayToFill = useArrayToFill();
-  const [currentKeyFrame, setCurrentKeyFrame] = useState<Keyframes>(spinAnimation(360))
-  const [spinTime, setSpinTime] = useState(10)
-  const [animationCount, setAnimationCount] = useState('infinite');
-
+  const [currentKeyFrame, setCurrentKeyFrame] = useState<Keyframes>(
+    spinAnimation(360)
+  );
+  const [spinTime, setSpinTime] = useState(10);
+  const [animationCount, setAnimationCount] = useState("infinite");
 
   let rotate = 0;
 
-  const generateRotateNumber = useCallback(() =>{
+  const generateRotateNumber = useCallback(() => {
+    setCurrentKeyFrame(spinAnimation(360));
     setSpinTime(1);
+    setAnimationCount("infinite");
     const rotateTo = Math.floor(Math.random() * 361);
-    console.log("Rotating to ",rotateTo,' degrees')
-    setTimeout(()=>{
-      setCurrentKeyFrame(spinAnimation(rotateTo))
-      setSpinTime(3)
-      setAnimationCount('1')
-    }, 5000)
-  },[])
+    console.log("Rotating to ", rotateTo, " degrees");
+    setTimeout(() => {
+      setCurrentKeyFrame(spinAnimation(rotateTo));
+      setSpinTime(3);
+      setAnimationCount("1");
+    }, 5000);
+  }, []);
 
   return (
     <Container>
       <Pointer>
         <FontAwesomeIcon icon={faLocationPin} size="3x" />
       </Pointer>
-      <WheelBox $currentSpinTime={spinTime} $currentKeyFrame={currentKeyFrame} $animationCount={animationCount}>
+      <WheelBox
+        $currentSpinTime={spinTime}
+        $currentKeyFrame={currentKeyFrame}
+        $animationCount={animationCount}
+      >
         {arrayToFill.map((x, index) => {
-          if(index > 0){
-            rotate += 7.5
+          if (index > 0) {
+            rotate += 7.5;
           }
-          return  <InnerBox
-          key={index}
-          $measures={{
-            rotate: rotate,
-            zindex: index === 0 ? 1:0,
-            color: x,
-          }}
-        />;
+          return (
+            <InnerBox
+              key={index}
+              $measures={{
+                rotate: rotate,
+                zindex: index === 0 ? 1 : 0,
+                color: x,
+              }}
+            />
+          );
         })}
       </WheelBox>
-      <SpinButton onClick={()=>generateRotateNumber()}>
-          <span style={{margin: '0px auto'}}>Click</span>
-          <SpinText>WINOVA</SpinText>
-          <span style={{margin: '0px auto'}}>To Spin</span>
-        </SpinButton>
+      <SpinButton onClick={() => generateRotateNumber()}>
+        <span style={{ margin: "0px auto" }}>Click</span>
+        <SpinText>WINOVA</SpinText>
+        <span style={{ margin: "0px auto" }}>To Spin</span>
+      </SpinButton>
     </Container>
   );
 };
 
 const Container = styled.section`
-position: relative;
-width: 355px;
-height: 355px;
-margin: auto;
-display: flex;
-flex-direction: column;
-justify-content: center;
-margin-top: 120px;
-border-top: 4px solid black;
-border-radius: 50%;
+  position: relative;
+  width: 355px;
+  height: 355px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 120px;
+  border-top: 4px solid black;
+  border-radius: 50%;
 `;
 
-const WheelBox = styled.div<{$currentSpinTime: number, $currentKeyFrame: Keyframes, $animationCount: string}>`
+const WheelBox = styled.div<{
+  $currentSpinTime: number;
+  $currentKeyFrame: Keyframes;
+  $animationCount: string;
+}>`
   width: 336px;
   height: 336px;
   margin: auto;
@@ -85,7 +98,9 @@ const WheelBox = styled.div<{$currentSpinTime: number, $currentKeyFrame: Keyfram
   position: relative;
   overflow: hidden;
   // transform: rotate(360deg);
-  animation: ${(props) => props.$currentKeyFrame} ${(props) => props.$animationCount} ${(props) => props.$currentSpinTime}s linear;
+  animation: ${(props) => props.$currentKeyFrame}
+    ${(props) => props.$animationCount} ${(props) => props.$currentSpinTime}s
+    linear;
   animation-fill-mode: forwards;
 `;
 const InnerBox = styled.div<{ $measures: InnerBoxProperties }>`
@@ -96,34 +111,34 @@ const InnerBox = styled.div<{ $measures: InnerBoxProperties }>`
   transform: rotate(${(props) => props.$measures.rotate}deg);
   position: absolute;
   border-top: 180px solid ${(props) => props.$measures.color};
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  height: 0;
 `;
 const SpinButton = styled.div`
-width: 180px;
-height: 180px;
-background: white;
-z-index: 2;
-position:absolute;
-display:flex;
-justify-content:center;
-flex-direction:column;
-// font-size: 2em;
-left: 87.5px;
-top: 87.5px;
-border-radius: 50%;
-font-family: 'Palette Mosaic', cursive;
-`
+  width: 180px;
+  height: 180px;
+  background: white;
+  z-index: 2;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  // font-size: 2em;
+  left: 87.5px;
+  top: 87.5px;
+  border-radius: 50%;
+  font-family: "Palette Mosaic", cursive;
+`;
 const SpinText = styled.span`
-text-align:center;
-font-size: 32px;
-// animation: zoomInText infinite 0.5s;
-`
+  text-align: center;
+  font-size: 32px;
+  // animation: zoomInText infinite 0.5s;
+`;
 const Pointer = styled.div`
-position: absolute;
-text-align:center;
-z-index: 50;
-top:-22px;
-left:159.5px;
-`
+  position: absolute;
+  text-align: center;
+  z-index: 50;
+  top: -22px;
+  left: 159.5px;
+`;
