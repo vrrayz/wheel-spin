@@ -2,6 +2,8 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { styled } from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
 
 interface InnerBoxProperties {
   rotate: number;
@@ -28,6 +30,9 @@ export const App = () => {
   }
   return (
     <Container>
+      <Pointer>
+        <FontAwesomeIcon icon={faLocationPin} size="3x" />
+      </Pointer>
       <WheelBox>
         {arrayToFill.map((x, index) => {
           if(index > 0){
@@ -51,12 +56,15 @@ export const App = () => {
 
 const Container = styled.section`
 position: relative;
-  width: 375px;
-  height: 375px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-top: 120px;
+width: 355px;
+height: 355px;
+margin: auto;
+display: flex;
+flex-direction: column;
+justify-content: center;
+margin-top: 120px;
+border-top: 4px solid black;
+border-radius: 50%;
 `;
 
 const WheelBox = styled.div`
@@ -67,7 +75,8 @@ const WheelBox = styled.div`
   background-color: #1e1c25;
   position: relative;
   overflow: hidden;
-  animation: App-logo-spin infinite 5s linear;
+  // transform: rotate(90deg);
+  animation: App-logo-spin infinite 10s linear;
 `;
 const InnerBox = styled.div<{ measures: InnerBoxProperties }>`
   width: 15px;
@@ -91,8 +100,8 @@ display:flex;
 justify-content:center;
 flex-direction:column;
 // font-size: 2em;
-left: 97.5px;
-top: 97.5px;
+left: 87.5px;
+top: 87.5px;
 border-radius: 50%;
 font-family: 'Palette Mosaic', cursive;
 `
@@ -100,4 +109,13 @@ const SpinText = styled.span`
 text-align:center;
 font-size: 32px;
 // animation: zoomInText infinite 0.5s;
+`
+const Pointer = styled.div`
+position: absolute;
+text-align:center;
+// width:20px;
+// height: 50px;
+z-index: 50;
+top:-22px;
+left:159.5px;
 `
