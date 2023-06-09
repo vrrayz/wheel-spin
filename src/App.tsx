@@ -5,64 +5,50 @@ import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
 import { useArrayToFill } from "./hooks/useArrayToFill";
-import { Keyframes } from "styled-components/dist/types";
 import { spinAnimation } from "./helpers/spinAnimation";
-
-interface InnerBoxProperties {
-  rotate: number;
-  zindex?: number;
-  color: string;
-}
+import { SpinAnimationProperties } from "./types";
+import { Wheel } from "./components/Wheel";
 
 export const App = () => {
-  const arrayToFill = useArrayToFill();
-  const [currentKeyFrame, setCurrentKeyFrame] = useState<Keyframes>(
-    spinAnimation(360)
-  );
-  const [spinTime, setSpinTime] = useState(10);
-  const [animationCount, setAnimationCount] = useState("infinite");
-
-  let rotate = 0;
-
+  const { spinValues, arrObj } = useArrayToFill();
+  const [spinAnimationValues, setSpinAnimationValues] =
+    useState<SpinAnimationProperties>({ ...spinValues });
+    
+  console.log(arrObj);
+  const setSpinValues = useCallback((animationValues: SpinAnimationProperties) => {
+    setSpinAnimationValues({...animationValues})
+  },[]);
   const generateRotateNumber = useCallback(() => {
-    setCurrentKeyFrame(spinAnimation(360));
-    setSpinTime(1);
-    setAnimationCount("infinite");
-    const rotateTo = Math.floor(Math.random() * 361);
-    console.log("Rotating to ", rotateTo, " degrees");
-    setTimeout(() => {
-      setCurrentKeyFrame(spinAnimation(rotateTo));
-      setSpinTime(3);
-      setAnimationCount("1");
-    }, 5000);
-  }, []);
+    const spinValues = {
+      currentSpinTime: 1,
+      currentKeyFrame: spinAnimation(360),
+      animationCount: "infinite",
+      animationTimingFunction: "linear",
+    };
+    setSpinValues(spinValues);
 
+    const rotateToIndex = Math.floor(Math.random() * arrObj.length);
+    const rotateTo = arrObj[rotateToIndex].rotate;
+
+    console.log("Rotating to ", rotateToIndex, " index");
+    console.log("Rotating to ", rotateTo, " degrees");
+    console.log("Rotating to ", arrObj[rotateToIndex].color, " color");
+    setTimeout(() => {
+      const spinValues = {
+        currentSpinTime: 3,
+        currentKeyFrame: spinAnimation(rotateTo),
+        animationCount: "1",
+        animationTimingFunction: "ease-out",
+      };
+    setSpinValues(spinValues);
+    }, 5000);
+  }, [arrObj, setSpinValues]);
   return (
     <Container>
       <Pointer>
         <FontAwesomeIcon icon={faLocationPin} size="3x" />
       </Pointer>
-      <WheelBox
-        $currentSpinTime={spinTime}
-        $currentKeyFrame={currentKeyFrame}
-        $animationCount={animationCount}
-      >
-        {arrayToFill.map((x, index) => {
-          if (index > 0) {
-            rotate += 7.5;
-          }
-          return (
-            <InnerBox
-              key={index}
-              $measures={{
-                rotate: rotate,
-                zindex: index === 0 ? 1 : 0,
-                color: x,
-              }}
-            />
-          );
-        })}
-      </WheelBox>
+      <Wheel spinAnimationValues={spinAnimationValues} innerBoxes={arrObj} />
       <SpinButton onClick={() => generateRotateNumber()}>
         <span style={{ margin: "0px auto" }}>Click</span>
         <SpinText>WINOVA</SpinText>
@@ -83,37 +69,6 @@ const Container = styled.section`
   margin-top: 120px;
   border-top: 4px solid black;
   border-radius: 50%;
-`;
-
-const WheelBox = styled.div<{
-  $currentSpinTime: number;
-  $currentKeyFrame: Keyframes;
-  $animationCount: string;
-}>`
-  width: 336px;
-  height: 336px;
-  margin: auto;
-  border-radius: 50%;
-  background-color: #1e1c25;
-  position: relative;
-  overflow: hidden;
-  // transform: rotate(360deg);
-  animation: ${(props) => props.$currentKeyFrame}
-    ${(props) => props.$animationCount} ${(props) => props.$currentSpinTime}s
-    linear;
-  animation-fill-mode: forwards;
-`;
-const InnerBox = styled.div<{ $measures: InnerBoxProperties }>`
-  width: 15px;
-  top: 0px;
-  left: 160.5px;
-  transform-origin: bottom;
-  transform: rotate(${(props) => props.$measures.rotate}deg);
-  position: absolute;
-  border-top: 180px solid ${(props) => props.$measures.color};
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  height: 0;
 `;
 const SpinButton = styled.div`
   width: 180px;
@@ -139,6 +94,6 @@ const Pointer = styled.div`
   position: absolute;
   text-align: center;
   z-index: 50;
-  top: -22px;
-  left: 159.5px;
+  top: -25px;
+  left: 153px;
 `;

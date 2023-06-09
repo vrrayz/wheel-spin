@@ -1,18 +1,39 @@
+import { spinAnimation } from "../helpers/spinAnimation";
+
 export const useArrayToFill = () => {
-  const arrayToFill = [];
+  let color = '';
   const colorIndex = [
     48, 2, 3, 2, 6, 2, 3, 2, 3, 2, 6, 2, 6, 2, 3, 2, 3, 2, 3, 2, 6, 2, 3, 2, 3,
     2, 6, 2, 6, 2, 3, 2, 3, 2, 3, 2, 6, 2, 3, 2, 3, 2, 3, 2, 6, 2, 3, 2,
   ];
+  const arrObj = [];
+  let actualRotateRange = 0;
+  let currentRotateRange = 0;
+  let previousRotateRange = 0;
   // 2 is slateblue
   // 3 is dogerblue
   // 6 is darkkhaki
   // 48 is salmon
-  for (let index = 0; index <= colorIndex.length; index++) {
-    if (colorIndex[index] === 48) arrayToFill.push("salmon");
-    if (colorIndex[index] === 6) arrayToFill.push("darkkhaki");
-    if (colorIndex[index] === 3) arrayToFill.push("dodgerblue");
-    if (colorIndex[index] === 2) arrayToFill.push("slateblue");
+  for (let index = 0; index < colorIndex.length; index++) {
+    if (colorIndex[index] === 48) color = "salmon";
+    if (colorIndex[index] === 6) color = "darkkhaki";
+    if (colorIndex[index] === 3) color = "dodgerblue";
+    if (colorIndex[index] === 2) color = "green";
+
+    previousRotateRange = currentRotateRange;
+    currentRotateRange -= 7.49999999;
+    actualRotateRange = (currentRotateRange + previousRotateRange) / 2;
+
+    arrObj.push({
+      colorIndex: colorIndex[index],
+      color: color,
+      rotate: actualRotateRange,
+    });
   }
-  return arrayToFill;
+  // modify this array to be an array of objects [{
+  //   color: 'color',
+  //   rotate: -(7.5) the negative will increment to the last point
+  // }]
+  const spinValues = {currentSpinTime:10,currentKeyFrame:spinAnimation(-360),animationCount:'infinite',animationTimingFunction:'linear'}
+  return { spinValues, arrObj };
 };
