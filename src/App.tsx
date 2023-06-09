@@ -8,12 +8,13 @@ import { useArrayToFill } from "./hooks/useArrayToFill";
 import { spinAnimation } from "./helpers/spinAnimation";
 import { SpinAnimationProperties } from "./types";
 import { Wheel } from "./components/Wheel";
+import { MultiplierButtons } from "./components/MultiplierButtons";
 
 export const App = () => {
   const { spinValues, arrObj } = useArrayToFill();
   const [spinAnimationValues, setSpinAnimationValues] =
     useState<SpinAnimationProperties>({ ...spinValues });
-    
+
   console.log(arrObj);
   const setSpinValues = useCallback((animationValues: SpinAnimationProperties) => {
     setSpinAnimationValues({...animationValues})
@@ -44,6 +45,7 @@ export const App = () => {
     }, 5000);
   }, [arrObj, setSpinValues]);
   return (
+    <>
     <Container>
       <Pointer>
         <FontAwesomeIcon icon={faLocationPin} size="3x" />
@@ -55,6 +57,8 @@ export const App = () => {
         <span style={{ margin: "0px auto" }}>To Spin</span>
       </SpinButton>
     </Container>
+    <MultiplierButtons />
+    </>
   );
 };
 

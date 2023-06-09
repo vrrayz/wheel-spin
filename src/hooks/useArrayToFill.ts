@@ -35,5 +35,11 @@ export const useArrayToFill = () => {
   //   rotate: -(7.5) the negative will increment to the last point
   // }]
   const spinValues = {currentSpinTime:10,currentKeyFrame:spinAnimation(-360),animationCount:'infinite',animationTimingFunction:'linear'}
-  return { spinValues, arrObj };
+  const multipliers = [
+    {multiple: 48, color: 'salmon', isActive: false},
+    {multiple: 6, color: 'darkkhaki', isActive: false},
+    {multiple: 3, color: 'dodgerblue', isActive: false},
+    {multiple: 2, color: 'green', isActive: false},
+  ]
+  return { spinValues, arrObj, multipliers };
 };
