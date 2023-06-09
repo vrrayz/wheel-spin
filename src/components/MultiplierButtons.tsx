@@ -9,20 +9,24 @@ interface ButtonMultiplier {
   color: string;
   isActive: boolean;
 }
-
-export const MultiplierButtons = () => {
+interface MultiplierButtonsProperties{
+  isButtonDisabled: boolean
+  setSelectedMultiplier: (multiplier:number) => void,
+}
+export const MultiplierButtons = ({isButtonDisabled, setSelectedMultiplier}:MultiplierButtonsProperties) => {
   const { multipliers } = useArrayToFill();
   const [buttonMultipliers, setButtonMultipliers] =
     useState<ButtonMultiplier[]>(multipliers);
-  const toggleActiveButton = (index: number) => {
+  const toggleActiveButton = (index: number, multiplier: number) => {
     setButtonMultipliers(buttonMultipliers.map((buttonMultiplier, multiplierIndex) => {
       return {...buttonMultiplier, isActive: index === multiplierIndex}
     }))
+    setSelectedMultiplier(multiplier)
   };
   return (
     <ButtonsContainer>
       {buttonMultipliers.map((buttonMultiplier, index) => (
-        <Button onClick={() => toggleActiveButton(index)} key={index}>
+        <Button onClick={() => toggleActiveButton(index, buttonMultiplier.multiple)} key={index} disabled={isButtonDisabled}>
           <TextContainerOverlay
             className={`${buttonMultiplier.isActive && "active"}`}
             $color={buttonMultiplier.color}
