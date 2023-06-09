@@ -12,57 +12,69 @@ import { MultiplierButtons } from "./components/MultiplierButtons";
 
 export const App = () => {
   const { spinValues, arrObj } = useArrayToFill();
+  const [canSpin,setCanSpin] = useState(true)
   const [spinAnimationValues, setSpinAnimationValues] =
     useState<SpinAnimationProperties>({ ...spinValues });
 
-  console.log(arrObj);
-  const setSpinValues = useCallback((animationValues: SpinAnimationProperties) => {
-    setSpinAnimationValues({...animationValues})
-  },[]);
+  const setSpinValues = useCallback(
+    (animationValues: SpinAnimationProperties) => {
+      setSpinAnimationValues({ ...animationValues });
+    },
+    []
+  );
   const generateRotateNumber = useCallback(() => {
-    const spinValues = {
-      currentSpinTime: 1,
-      currentKeyFrame: spinAnimation(360),
-      animationCount: "infinite",
-      animationTimingFunction: "linear",
-    };
-    setSpinValues(spinValues);
-
-    const rotateToIndex = Math.floor(Math.random() * arrObj.length);
-    const rotateTo = arrObj[rotateToIndex].rotate;
-
-    console.log("Rotating to ", rotateToIndex, " index");
-    console.log("Rotating to ", rotateTo, " degrees");
-    console.log("Rotating to ", arrObj[rotateToIndex].color, " color");
-    setTimeout(() => {
+    if(canSpin){
+      setCanSpin(false)
       const spinValues = {
-        currentSpinTime: 3,
-        currentKeyFrame: spinAnimation(rotateTo),
-        animationCount: "1",
-        animationTimingFunction: "ease-out",
+        currentSpinTime: 1,
+        currentKeyFrame: spinAnimation(360),
+        animationCount: "infinite",
+        animationTimingFunction: "linear",
       };
-    setSpinValues(spinValues);
-    }, 5000);
-  }, [arrObj, setSpinValues]);
+      setSpinAnimationValues({ ...spinValues });
+  
+      const rotateToIndex = Math.floor(Math.random() * arrObj.length);
+      const rotateTo = arrObj[rotateToIndex].rotate;
+  
+      console.log("Rotating to ", rotateToIndex, " index");
+      console.log("Rotating to ", rotateTo, " degrees");
+      console.log("Rotating to ", arrObj[rotateToIndex].color, " color");
+  
+      setTimeout(() => {
+        const spinValues = {
+          currentSpinTime: 3,
+          currentKeyFrame: spinAnimation(rotateTo),
+          animationCount: "1",
+          animationTimingFunction: "ease-out",
+        };
+        setSpinAnimationValues({ ...spinValues });
+        setCanSpin(true)
+      }, 5000);
+    }
+  }, [arrObj, canSpin]);
   return (
-    <>
-    <Container>
-      <Pointer>
-        <FontAwesomeIcon icon={faLocationPin} size="3x" />
-      </Pointer>
-      <Wheel spinAnimationValues={spinAnimationValues} innerBoxes={arrObj} />
-      <SpinButton onClick={() => generateRotateNumber()}>
-        <span style={{ margin: "0px auto" }}>Click</span>
-        <SpinText>WINOVA</SpinText>
-        <span style={{ margin: "0px auto" }}>To Spin</span>
-      </SpinButton>
-    </Container>
-    <MultiplierButtons />
-    </>
+    <GameContainer>
+      <WheelContainer>
+        <Pointer>
+          <FontAwesomeIcon icon={faLocationPin} size="3x" />
+        </Pointer>
+        <Wheel spinAnimationValues={spinAnimationValues} innerBoxes={arrObj} />
+        <SpinButton onClick={() => generateRotateNumber()}>
+          <span style={{ margin: "0px auto" }}>Click</span>
+          <SpinText>WINOVA</SpinText>
+          <span style={{ margin: "0px auto" }}>To Spin</span>
+        </SpinButton>
+      </WheelContainer>
+      <MultiplierButtons />
+    </GameContainer>
   );
 };
 
-const Container = styled.section`
+const GameContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
+const WheelContainer = styled.section`
   position: relative;
   width: 355px;
   height: 355px;
