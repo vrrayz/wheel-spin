@@ -11,6 +11,7 @@ import { Wheel } from "./components/Wheel";
 import { MultiplierButtons } from "./components/MultiplierButtons";
 import { RoundResult } from "./components/RoundResult";
 import { Wager } from "./components/Wager";
+import { ErrorMessage } from "./components/styled";
 
 
 export const App = () => {
@@ -22,7 +23,7 @@ export const App = () => {
   const [spinAnimationValues, setSpinAnimationValues] =
     useState<SpinAnimationProperties>({ ...spinValues });
   const [selectedMultiplier, setSelectedMultiplier] = useState<number>(0);
-
+  const [errorExist, setErrorExist] = useState(false)
 
   const generateRotateNumber = useCallback(() => {
     if (canSpin && selectedMultiplier > 0) {
@@ -73,6 +74,7 @@ export const App = () => {
       }, 5000);
       announceResult(rotateToIndex)
     }
+    setErrorExist(selectedMultiplier === 0)
   }, [arrObj, canSpin, selectedMultiplier]);
 
   const resetRound = useCallback(() => {
@@ -80,6 +82,7 @@ export const App = () => {
     setisButtonsDisabled(false);// user can click on button multipliers after the current spin is done
     setIsRoundEnded(false);
     setSpinAnimationValues({...spinValues})
+    setSelectedMultiplier(0)
   },[spinValues])
   return (
     <GameContainer>
@@ -91,10 +94,11 @@ export const App = () => {
         <Wheel spinAnimationValues={spinAnimationValues} innerBoxes={arrObj} />
         <SpinButton onClick={() => generateRotateNumber()}>
           <span style={{ margin: "0px auto" }}>Click</span>
-          <SpinText>WINOVA</SpinText>
+          <SpinText>Wager</SpinText>
           <span style={{ margin: "0px auto" }}>To Spin</span>
         </SpinButton>
       </WheelContainer>
+      {errorExist && <ErrorMessage style={{textAlign: 'center'}}>You need to select a multiplier</ErrorMessage>}
       <MultiplierButtons
         isButtonDisabled={isButtonsDisabled}
         setSelectedMultiplier={setSelectedMultiplier}
@@ -102,7 +106,7 @@ export const App = () => {
       {isRoundEnded && (
         <RoundResult roundResult={roundResult} resetRound={resetRound} />
       )}
-      <Wager />
+      <Wager stakeAndSpin={generateRotateNumber} />
     </GameContainer>
   );
 };
@@ -136,8 +140,8 @@ const SpinButton = styled.div`
   left: 87.5px;
   top: 87.5px;
   border-radius: 50%;
-  font-family: "Palette Mosaic", cursive;
-`;
+  font-family: 'Titillium Web',sans-serif;
+  `;
 const SpinText = styled.span`
   text-align: center;
   font-size: 32px;
