@@ -10,6 +10,7 @@ import { RoundResultType, SpinAnimationProperties } from "./types";
 import { Wheel } from "./components/Wheel";
 import { MultiplierButtons } from "./components/MultiplierButtons";
 import { RoundResult } from "./components/RoundResult";
+import { Wager } from "./components/Wager";
 
 
 export const App = () => {
@@ -100,6 +101,7 @@ export const App = () => {
       {isRoundEnded && (
         <RoundResult roundResult={roundResult} resetRound={resetRound} />
       )}
+      <Wager />
     </GameContainer>
   );
 };

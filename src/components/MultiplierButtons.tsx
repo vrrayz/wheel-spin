@@ -42,24 +42,23 @@ export const MultiplierButtons = ({isButtonDisabled, setSelectedMultiplier}:Mult
 const ButtonsContainer = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-top: 16px;
+  margin-top: 2px;
 `;
 const Button = styled.button`
   background-color: #ddd;
   border: none;
-  /* padding: 8px 12px; */
   padding: 0px;
   position: relative;
   font-size: 14px;
   width: 50px;
-  height: 27px;
+  height: 30px;
   border-radius: 4px;
   overflow: hidden;
 `;
 const TextContainerOverlay = styled.span<{$color: string}>`
   display: block;
   position: absolute;
-  top: 25px;
+  top: 28px;
   width: 100%;
   height: 100%;
   background-color:  ${(props) => props.$color};
