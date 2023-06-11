@@ -152,7 +152,7 @@ const Pointer = styled.div`
 const Balance= styled.p`
 text-align: right;
 padding-right: 12px;
-font-size: 18px;
-font-weight: 400;
+font-size: 16px;
+font-weight: 600;
 font-family: 'Titillium Web',sans-serif;
 `
