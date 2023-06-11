@@ -13,7 +13,6 @@ import { RoundResult } from "./components/RoundResult";
 import { Wager } from "./components/Wager";
 import { ErrorMessage } from "./components/styled";
 
-
 export const App = () => {
   const { spinValues, arrObj } = useArrayToFill();
   const [canSpin, setCanSpin] = useState(true);
@@ -23,88 +22,96 @@ export const App = () => {
   const [spinAnimationValues, setSpinAnimationValues] =
     useState<SpinAnimationProperties>({ ...spinValues });
   const [selectedMultiplier, setSelectedMultiplier] = useState<number>(0);
-  const [errorExist, setErrorExist] = useState(false)
+  const [errorExist, setErrorExist] = useState(false);
+  const [userBalance, setUserBalance] = useState<number>(10000);
+  const [currentPNL, setCurrentPNL] = useState<number>(0);
 
-  const generateRotateNumber = useCallback(() => {
-    if (canSpin && selectedMultiplier > 0) {
-      setCanSpin(false); // Dont allow the user to spin again while the current spin is running
-      setisButtonsDisabled(true); // Dont allow the user to click on button multipliers while the current spin is running
+  const generateRotateNumber = useCallback(
+    (stakeAmount: number) => {
+      if (canSpin && selectedMultiplier > 0) {
+        setCanSpin(false); // Dont allow the user to spin again while the current spin is running
+        setisButtonsDisabled(true); // Dont allow the user to click on button multipliers while the current spin is running
 
-      const spinValues = {
-        currentSpinTime: 1,
-        currentKeyFrame: spinAnimation(360),
-        animationCount: "infinite",
-        animationTimingFunction: "linear",
-      };
-      setSpinAnimationValues({ ...spinValues });
-
-      const rotateToIndex = Math.floor(Math.random() * arrObj.length);
-      const rotateTo = arrObj[rotateToIndex].rotate;
-
-      console.log("Rotating to ", rotateToIndex, " index");
-      console.log("Rotating to ", rotateTo, " degrees");
-      console.log("Rotating to ", arrObj[rotateToIndex].color, " color");
-      console.log("Selected ", selectedMultiplier);
-
-      const announceResult = (index: number) => {
-        setTimeout(() => {
-        setIsRoundEnded(true);
-          setRoundResult(
-            selectedMultiplier === arrObj[index].colorIndex
-              ? "won"
-              : "lost"
-          );
-        },8500)
-      }
-
-      setTimeout(() => {
-        console.log(
-          "The actual result is ",
-          selectedMultiplier === arrObj[rotateToIndex].colorIndex
-        );
         const spinValues = {
-          currentSpinTime: 3,
-          currentKeyFrame: spinAnimation(rotateTo),
-          animationCount: "1",
-          animationTimingFunction: "ease-out",
+          currentSpinTime: 1,
+          currentKeyFrame: spinAnimation(360),
+          animationCount: "infinite",
+          animationTimingFunction: "linear",
         };
         setSpinAnimationValues({ ...spinValues });
-        // setCanSpin(true)
-        // setisButtonsDisabled(false);// user can click on button multipliers after the current spin is done
-      }, 5000);
-      announceResult(rotateToIndex)
-    }
-    setErrorExist(selectedMultiplier === 0)
-  }, [arrObj, canSpin, selectedMultiplier]);
 
-  const resetRound = useCallback(() => {
-    setCanSpin(true)
-    setisButtonsDisabled(false);// user can click on button multipliers after the current spin is done
+        const rotateToIndex = Math.floor(Math.random() * arrObj.length);
+        const rotateTo = arrObj[rotateToIndex].rotate;
+
+        console.log("Rotating to ", rotateToIndex, " index");
+        console.log("Rotating to ", rotateTo, " degrees");
+        console.log("Rotating to ", arrObj[rotateToIndex].color, " color");
+        console.log("Selected ", selectedMultiplier);
+
+        const announceResult = (index: number) => {
+          setTimeout(() => {
+            setIsRoundEnded(true);
+            setRoundResult(
+              selectedMultiplier === arrObj[index].colorIndex ? "won" : "lost"
+            );
+            const returns =  selectedMultiplier === arrObj[index].colorIndex ? selectedMultiplier * stakeAmount : -stakeAmount
+            setCurrentPNL(returns)
+            setUserBalance((prev) => prev + returns)
+          }, 8500);
+        };
+
+        setTimeout(() => {
+          console.log(
+            "The actual result is ",
+            selectedMultiplier === arrObj[rotateToIndex].colorIndex
+          );
+          const spinValues = {
+            currentSpinTime: 3,
+            currentKeyFrame: spinAnimation(rotateTo),
+            animationCount: "1",
+            animationTimingFunction: "ease-out",
+          };
+          setSpinAnimationValues({ ...spinValues });
+        }, 5000);
+        announceResult(rotateToIndex);
+      }
+      setErrorExist(selectedMultiplier === 0);
+    },
+    [arrObj, canSpin, selectedMultiplier]
+  );
+
+  const resetRound =() => {
+    setCanSpin(true);
+    setisButtonsDisabled(false); // user can click on button multipliers after the current spin is done
     setIsRoundEnded(false);
-    setSpinAnimationValues({...spinValues})
-    setSelectedMultiplier(0)
-  },[spinValues])
+    setSpinAnimationValues({ ...spinValues });
+    // setSelectedMultiplier(0);
+  };
   return (
     <GameContainer>
-      <Balance>1000 SCROLL</Balance>
+      <Balance>{userBalance} SCROLL</Balance>
       <WheelContainer>
         <Pointer>
           <FontAwesomeIcon icon={faLocationPin} size="3x" />
         </Pointer>
         <Wheel spinAnimationValues={spinAnimationValues} innerBoxes={arrObj} />
-        <SpinButton onClick={() => generateRotateNumber()}>
+        <SpinButton /*onClick={() => generateRotateNumber()}*/>
           <span style={{ margin: "0px auto" }}>Click</span>
           <SpinText>Wager</SpinText>
           <span style={{ margin: "0px auto" }}>To Spin</span>
         </SpinButton>
       </WheelContainer>
-      {errorExist && <ErrorMessage style={{textAlign: 'center'}}>You need to select a multiplier</ErrorMessage>}
+      {errorExist && (
+        <ErrorMessage style={{ textAlign: "center" }}>
+          You need to select a multiplier
+        </ErrorMessage>
+      )}
       <MultiplierButtons
         isButtonDisabled={isButtonsDisabled}
         setSelectedMultiplier={setSelectedMultiplier}
       />
       {isRoundEnded && (
-        <RoundResult roundResult={roundResult} resetRound={resetRound} />
+        <RoundResult roundResult={roundResult} currentPNL={currentPNL} resetRound={resetRound} />
       )}
       <Wager stakeAndSpin={generateRotateNumber} />
     </GameContainer>
@@ -140,8 +147,8 @@ const SpinButton = styled.div`
   left: 87.5px;
   top: 87.5px;
   border-radius: 50%;
-  font-family: 'Titillium Web',sans-serif;
-  `;
+  font-family: "Titillium Web", sans-serif;
+`;
 const SpinText = styled.span`
   text-align: center;
   font-size: 32px;
@@ -153,10 +160,10 @@ const Pointer = styled.div`
   top: -25px;
   left: 153px;
 `;
-const Balance= styled.p`
-text-align: right;
-padding-right: 12px;
-font-size: 16px;
-font-weight: 600;
-font-family: 'Titillium Web',sans-serif;
-`
+const Balance = styled.p`
+  text-align: right;
+  padding-right: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Titillium Web", sans-serif;
+`;

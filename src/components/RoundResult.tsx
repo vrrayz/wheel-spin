@@ -7,15 +7,16 @@ import { RoundResultType } from '../types';
 
 interface RoundResultProperties{
     roundResult: RoundResultType;
-    resetRound: () => void
+    resetRound: () => void;
+    currentPNL: number
 }
 
-export const RoundResult = ({roundResult, resetRound}: RoundResultProperties) => {
+export const RoundResult = ({roundResult, resetRound, currentPNL}: RoundResultProperties) => {
   return (
     <RoundResultOverlay>
           <RoundMessageContainer>
             <ResultMessage>You {roundResult}</ResultMessage>
-            <ResultAmount className={roundResult}>1999</ResultAmount>
+            <ResultAmount className={roundResult}>{currentPNL}</ResultAmount>
           </RoundMessageContainer>
           <CloseButton onClick={resetRound}>
             <FontAwesomeIcon icon={faClose} size="2x" />

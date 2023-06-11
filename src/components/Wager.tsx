@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { ErrorMessage } from "./styled";
 
 interface WagerProperties {
-    stakeAndSpin: () => void;
+    stakeAndSpin: (stakeAmount: number) => void;
 }
 
 export const Wager = ({stakeAndSpin}:WagerProperties) => {
@@ -18,7 +18,7 @@ export const Wager = ({stakeAndSpin}:WagerProperties) => {
         }else{
             setErrorExist(false)
             setErrorMessage("")
-            stakeAndSpin()
+            stakeAndSpin(amount)
         }
     }
   return (
