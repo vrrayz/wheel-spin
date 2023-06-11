@@ -83,6 +83,7 @@ export const App = () => {
   },[spinValues])
   return (
     <GameContainer>
+      <Balance>1000 SCROLL</Balance>
       <WheelContainer>
         <Pointer>
           <FontAwesomeIcon icon={faLocationPin} size="3x" />
@@ -119,7 +120,7 @@ const WheelContainer = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 120px;
+  margin-top: 42px;
   border-top: 4px solid black;
   border-radius: 50%;
 `;
@@ -148,3 +149,10 @@ const Pointer = styled.div`
   top: -25px;
   left: 153px;
 `;
+const Balance= styled.p`
+text-align: right;
+padding-right: 12px;
+font-size: 18px;
+font-weight: 400;
+font-family: 'Titillium Web',sans-serif;
+`
