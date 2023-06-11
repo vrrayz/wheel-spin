@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // import logo from "./logo.svg";
 import "./App.css";
 import { styled } from "styled-components";
@@ -25,12 +25,15 @@ export const App = () => {
   const [errorExist, setErrorExist] = useState(false);
   const [userBalance, setUserBalance] = useState<number>(10000);
   const [currentPNL, setCurrentPNL] = useState<number>(0);
+  const [winRate, setWinRate] = useState<string[]>([])
+  const [winChances, setWinChances] = useState<string[]>([])
 
   const generateRotateNumber = useCallback(
     (stakeAmount: number) => {
       if (canSpin && selectedMultiplier > 0) {
         setCanSpin(false); // Dont allow the user to spin again while the current spin is running
         setisButtonsDisabled(true); // Dont allow the user to click on button multipliers while the current spin is running
+        setUserBalance((prev) => prev - stakeAmount);
 
         const spinValues = {
           currentSpinTime: 1,
@@ -40,8 +43,21 @@ export const App = () => {
         };
         setSpinAnimationValues({ ...spinValues });
 
-        const rotateToIndex = Math.floor(Math.random() * arrObj.length);
-        const rotateTo = arrObj[rotateToIndex].rotate;
+
+        let rotateToIndex = Math.floor(Math.random() * arrObj.length);
+        let rotateTo = arrObj[rotateToIndex].rotate;
+       
+        // check if win chances is empty - if it is. allow roll
+        if(winChances.length > 0){
+          // So this should reduce the win rate
+          if(winChances[Math.floor(Math.random() * winChances.length)] === 'reduceChance' && selectedMultiplier === arrObj[rotateToIndex].colorIndex){
+            if(rotateToIndex === 47) rotateToIndex -= 1
+            else{
+              rotateToIndex += 1
+            }
+            rotateTo = arrObj[rotateToIndex].rotate;
+          }
+        }
 
         console.log("Rotating to ", rotateToIndex, " index");
         console.log("Rotating to ", rotateTo, " degrees");
@@ -54,12 +70,14 @@ export const App = () => {
             setRoundResult(
               selectedMultiplier === arrObj[index].colorIndex ? "won" : "lost"
             );
+            setWinRate(prev => [...prev, selectedMultiplier === arrObj[index].colorIndex ? "won" : "lost"])
+            setWinChances(prev => [...prev, selectedMultiplier === arrObj[index].colorIndex ? "reduceChance" : ""])
             const returns =
               selectedMultiplier === arrObj[index].colorIndex
                 ? selectedMultiplier * stakeAmount
                 : -stakeAmount;
             setCurrentPNL(returns);
-            setUserBalance((prev) => prev + returns);
+            setUserBalance((prev) => prev + (returns > 0 ? returns : 0));
           }, 8500);
         };
 
@@ -80,7 +98,7 @@ export const App = () => {
       }
       setErrorExist(selectedMultiplier === 0);
     },
-    [arrObj, canSpin, selectedMultiplier]
+    [arrObj, canSpin, selectedMultiplier, winChances]
   );
 
   const resetRound = () => {
@@ -90,6 +108,11 @@ export const App = () => {
     setSpinAnimationValues({ ...spinValues });
     // setSelectedMultiplier(0);
   };
+
+  useEffect(() => {
+    const winPercentage = winRate.filter(x => x === 'won').length
+    console.log('User has won ',winPercentage,' out of ',winRate.length,' games')
+  },[winRate])
   return (
     <GameContainer>
       <Balance>{userBalance} WIN</Balance>
