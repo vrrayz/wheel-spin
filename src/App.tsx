@@ -89,7 +89,7 @@ export const App = () => {
   };
   return (
     <GameContainer>
-      <Balance>{userBalance} SCROLL</Balance>
+      <Balance>{userBalance} WIN</Balance>
       <WheelContainer>
         <Pointer>
           <FontAwesomeIcon icon={faLocationPin} size="3x" />
