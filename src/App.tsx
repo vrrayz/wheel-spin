@@ -54,9 +54,12 @@ export const App = () => {
             setRoundResult(
               selectedMultiplier === arrObj[index].colorIndex ? "won" : "lost"
             );
-            const returns =  selectedMultiplier === arrObj[index].colorIndex ? selectedMultiplier * stakeAmount : -stakeAmount
-            setCurrentPNL(returns)
-            setUserBalance((prev) => prev + returns)
+            const returns =
+              selectedMultiplier === arrObj[index].colorIndex
+                ? selectedMultiplier * stakeAmount
+                : -stakeAmount;
+            setCurrentPNL(returns);
+            setUserBalance((prev) => prev + returns);
           }, 8500);
         };
 
@@ -80,7 +83,7 @@ export const App = () => {
     [arrObj, canSpin, selectedMultiplier]
   );
 
-  const resetRound =() => {
+  const resetRound = () => {
     setCanSpin(true);
     setisButtonsDisabled(false); // user can click on button multipliers after the current spin is done
     setIsRoundEnded(false);
@@ -111,9 +114,16 @@ export const App = () => {
         setSelectedMultiplier={setSelectedMultiplier}
       />
       {isRoundEnded && (
-        <RoundResult roundResult={roundResult} currentPNL={currentPNL} resetRound={resetRound} />
+        <RoundResult
+          roundResult={roundResult}
+          currentPNL={currentPNL}
+          resetRound={resetRound}
+        />
       )}
-      <Wager stakeAndSpin={generateRotateNumber} />
+      <Wager
+        stakeAndSpin={generateRotateNumber}
+        isButtonDisabled={isButtonsDisabled}
+      />
     </GameContainer>
   );
 };
