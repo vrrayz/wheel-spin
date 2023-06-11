@@ -17,3 +17,4 @@ export interface InnerBoxProperties {
     left?: number;
     color: string;
   }
+  export type RoundResultType = "won" | "lost" | undefined;

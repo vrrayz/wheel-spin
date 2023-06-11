@@ -1,24 +1,23 @@
 import React, { useCallback, useState } from "react";
 // import logo from "./logo.svg";
-import glitter from "./assets/glitter.gif";
 import "./App.css";
 import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faLocationPin } from "@fortawesome/free-solid-svg-icons";
+import { faLocationPin } from "@fortawesome/free-solid-svg-icons";
 import { useArrayToFill } from "./hooks/useArrayToFill";
 import { spinAnimation } from "./helpers/spinAnimation";
-import { SpinAnimationProperties } from "./types";
+import { RoundResultType, SpinAnimationProperties } from "./types";
 import { Wheel } from "./components/Wheel";
 import { MultiplierButtons } from "./components/MultiplierButtons";
+import { RoundResult } from "./components/RoundResult";
 
-type RoundResult = "won" | "lost";
 
 export const App = () => {
   const { spinValues, arrObj } = useArrayToFill();
   const [canSpin, setCanSpin] = useState(true);
   const [isButtonsDisabled, setisButtonsDisabled] = useState(false);
   const [isRoundEnded, setIsRoundEnded] = useState(false);
-  const [roundResult, setRoundResult] = useState<RoundResult>();
+  const [roundResult, setRoundResult] = useState<RoundResultType>();
   const [spinAnimationValues, setSpinAnimationValues] =
     useState<SpinAnimationProperties>({ ...spinValues });
   const [selectedMultiplier, setSelectedMultiplier] = useState<number>(0);
@@ -99,16 +98,7 @@ export const App = () => {
         setSelectedMultiplier={setSelectedMultiplier}
       />
       {isRoundEnded && (
-        <RoundResultOverlay>
-          <RoundMessageContainer>
-            <ResultMessage>You {roundResult}</ResultMessage>
-            <ResultAmount className={roundResult}>1999</ResultAmount>
-          </RoundMessageContainer>
-          <CloseButton onClick={resetRound}>
-            <FontAwesomeIcon icon={faClose} size="2x" />
-          </CloseButton>
-          {roundResult === 'won' && <img src={glitter} alt="Glitter" />}
-        </RoundResultOverlay>
+        <RoundResult roundResult={roundResult} resetRound={resetRound} />
       )}
     </GameContainer>
   );
@@ -140,7 +130,6 @@ const SpinButton = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  // font-size: 2em;
   left: 87.5px;
   top: 87.5px;
   border-radius: 50%;
@@ -149,7 +138,6 @@ const SpinButton = styled.div`
 const SpinText = styled.span`
   text-align: center;
   font-size: 32px;
-  // animation: zoomInText infinite 0.5s;
 `;
 const Pointer = styled.div`
   position: absolute;
@@ -157,41 +145,4 @@ const Pointer = styled.div`
   z-index: 50;
   top: -25px;
   left: 153px;
-`;
-const RoundResultOverlay = styled.div`
-  background-color: rgba(0, 0, 0, 0.9);
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  z-index: 100;
-  font-family: "Lexend", sans-serif;
-  text-align: center;
-  color: #fff;
-`;
-const ResultMessage = styled.h3`
-  font-size: 56px;
-  margin-bottom: 8px;
-`;
-const ResultAmount = styled.p`
-  font-size: 65px;
-  margin-top: 8px;
-  &.won {
-    color: green;
-  }
-  &.lost {
-    color: red;
-  }
-`;
-const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  color: #fff;
-  position: absolute;
-  top: 12px;
-  right: 12px;
-`;
-const RoundMessageContainer = styled.div`
-  // position: absolute;
-  // margin-top: 20px;
 `;
