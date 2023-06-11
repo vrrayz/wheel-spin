@@ -20,7 +20,8 @@ const WagerSection = styled.section`
 margin: 16px;
 `;
 const WagerInput = styled.input`
-  width: 335px;
+padding-left: 8px;
+  width: 330px;
   margin: auto;
   font-size: 14px;
   height: 35px;
