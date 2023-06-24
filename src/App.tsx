@@ -155,6 +155,7 @@ const GameContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+  overflow-x:hidden;
 `;
 const WheelContainer = styled.section`
   position: relative;
